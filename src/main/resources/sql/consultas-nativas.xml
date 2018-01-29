@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+	
+	<named-native-query name="Vendas.totalPorMes" result-set-mapping="totalPorMesMapping">
+		<query>
+			select FORMAT(data_criacao , 'yyyy/MM') as mes,
+			count(id) as total
+			from venda 
+			where data_criacao > Dateadd(Month, Datediff(Month, 0, DATEADD(m, -6, GETDATE())), 0)
+			and status = 'EMITIDO'		
+			group by FORMAT(data_criacao , 'yyyy/MM')
+			order by FORMAT(data_criacao , 'yyyy/MM') desc;
+	    </query>
+	</named-native-query>
+	
+	<named-native-query name="Vendas.porOrigem" result-set-mapping="porOrigemMapping">
+		<query>
+			select format(v.data_criacao, 'yyyy/MM') as mes
+				, (select convert(integer, sum(i.quantidade))
+					from item_venda i
+					, cerveja c
+					, venda v1
+					where i.id_venda = v1.id 
+					and i.id_cerveja = c.id
+					and c.origem = 'NACIONAL'
+					and format(v1.data_criacao, 'yyyy/MM') = format(v.data_criacao, 'yyyy/MM')
+				) as totalNacional 
+				, (select convert(integer, sum(i.quantidade))
+					from item_venda i
+					, cerveja c
+					, venda v1
+					where i.id_venda = v1.id 
+					and i.id_cerveja = c.id
+					and c.origem = 'INTERNACIONAL'
+					and format(v1.data_criacao, 'yyyy/MM') = format(v.data_criacao, 'yyyy/MM')
+				) as totalInternacional
+			from venda v
+			where data_criacao > Dateadd(month, Datediff(Month, 0, DATEADD(m, -6, GETDATE())), 0)
+			and status = 'EMITIDO'
+			group by format(v.data_criacao, 'yyyy/MM')  
+			order by format(v.data_criacao, 'yyyy/MM') desc
+		</query>
+	</named-native-query>
+	
+	<sql-result-set-mapping name="totalPorMesMapping">
+		<constructor-result target-class="br.com.luciano.brewer.dto.VendaMes">
+			<column name="mes" class="java.lang.String"/>
+			<column name="total" class="java.lang.Integer"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+	
+	<sql-result-set-mapping name="porOrigemMapping">
+		<constructor-result target-class="br.com.luciano.brewer.dto.VendaOrigem">
+			<column name="mes" class="java.lang.String"/>
+			<column name="totalNacional" class="java.lang.Integer"/>
+			<column name="totalInternacional" class="java.lang.Integer"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+	
+</entity-mappings>

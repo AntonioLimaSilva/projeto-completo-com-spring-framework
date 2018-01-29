@@ -1,0 +1,31 @@
+<script id="tabela-pesquisa-rapida-cliente" type="text/x-handlebars-template">
+
+<div class="table-responsive  bw-tabela-simples" style="margin-top: 15px">
+	<table class="table  table-hover">
+		<thead>
+			<tr>
+				<th class="col-sm-6">Nome</th>
+				<th class="col-sm-3">CPF/CNPJ</th>
+				<th class="col-sm-3">Telefone</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{{#if .}}
+				{{#each .}}
+					<tr data-id="{{id}}" data-nome="{{nome}}" class="js-tabela-pesquisa-cliente">
+						<td>{{nome}}</td>
+						<td>{{cpfOuCnpj}}</td>
+						<td>{{telefone}}</td>
+					</tr>
+				{{/each}}
+			{{else}}
+				<tr>
+					<td colspan="2">Nenhum cliente encontrado</td>
+				</tr>
+			{{/if}}
+		</tbody>
+	</table>
+</div>
+
+</script>

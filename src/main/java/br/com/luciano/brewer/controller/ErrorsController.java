@@ -1,0 +1,25 @@
+package br.com.luciano.brewer.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+/**
+ * 
+ * @author Luciano Lima
+ *
+ */
+@Controller
+public class ErrorsController {
+
+	@GetMapping("/404")
+	public String paginaNaoEncontrada() {
+		return "404";
+	}
+	
+	@RequestMapping("/500")
+	public String erroNoServidor() {
+		return "500";
+	}
+	
+}

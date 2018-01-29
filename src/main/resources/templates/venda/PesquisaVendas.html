@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:brewer="luclimasilva23@gmail.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"
+	layout:decorate="~{layout/LayoutPadrao}">
+	
+<head>
+	<title>Pesquisa de vendas</title>
+</head>
+
+<body>
+<section layout:fragment="conteudo">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-10">
+					<h1>Pesquisa de vendas</h1>
+				</div>
+				
+				<div class="col-xs-2">
+					<div class="aw-page-header-controls">
+						<a class="btn  btn-default" th:href="@{/vendas/nova}">
+							<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Novo venda</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="container-fluid">
+		<form method="GET" th:object="${vendaFilter}" th:action="@{/vendas}">
+			<div class="row">			
+				<div class="form-group  col-sm-6" >
+					<label class="control-label" for="status">Status</label>
+					<select id="status" class="form-control" th:field="*{status}">
+						<option value="">Selecione um status</option>
+						<option th:each="stat : ${status}" th:value="${stat}" th:text="${stat.descricao}">Orçamento</option>
+					</select>
+				</div>
+			</div>
+			
+			<button type="submit" class="btn  btn-primary">Pesquisar</button>
+		</form>
+		
+		<div class="table-responsive  bw-tabela-simples">
+			<table class="table  table-hover">
+				<thead>
+					<tr>
+						<th class="table-vendas-col-nome">Usuário</th>
+						<th class="table-vendas-col-estilo">Cliente</th>
+						<th class="table-vendas-col-origem">Data criação</th>
+						<th class="table-vendas-col-origem">Status</th>
+						<th class="table-vendas-col-valor">Valor total</th>
+						<th class="table-vendas-col-valor">Valor frete</th>
+						<th class="table-vendas-col-valor">Valor desconto</th>
+						<th class="table-vendas-col-acoes"></th>
+					</tr>
+				</thead>
+				
+				<tbody>
+					<tr th:each="venda : ${pagina.conteudo}">
+						<td th:text="${venda.usuario.nome}">ADM</td>
+						<td th:text="${venda.cliente.nome}">Antonio</td>
+						<td th:text="${{venda.dataCriacao}}">01/01/1970</td>
+						<td th:text="${venda.status.descricao}">Orçamento</td>
+						<td th:text="${venda.valorTotal}">999</td>
+						<td th:text="${venda.valorFrete}">99</td>
+						<td th:text="${venda.valorDesconto}">90</td>
+						<td class="text-center">
+							<a class="btn  btn-link  btn-xs js-tooltip" title="Editar"
+								th:href="@{/vendas/{id}(id=${venda.id})}"> 
+								<i class="glyphicon glyphicon-pencil"></i>
+							</a>
+							<a class="btn  btn-link  btn-xs js-tooltip" title="Editar"
+								target="_blank" th:href="@{/vendas/relatorio/{id}(id=${venda.id})}"> 
+								<i class="glyphicon glyphicon-print"></i>
+							</a>
+							<a class="btn  btn-link  btn-xs js-tooltip js-excluir-btn" title="Excluir" href="#" 
+								data:objeto="|Venda Nº ${venda.id}|" data:url="@{/vendas/{id}(id=${venda.id})}">
+								<i class="glyphicon glyphicon-remove"></i>
+							</a>
+						</td>
+					</tr>
+					<tr th:if="${pagina.vazia}">
+						<td colspan="7">Nunhuma venda encontrada!</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<brewer:pagination page="${pagina}" />
+	</div>
+
+</section>
+<th:block layout:fragment="javascript-extras">
+	<script th:src="@{/javascripts/brewer.dialogo-excluir.js}"></script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:brewer="luclimasilva23@gmail.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"
+	layout:decorate="~{layout/LayoutPadrao}">
+	
+<head>
+	<title>Pesquisa de cidades</title>
+</head>
+
+<body>
+<section layout:fragment="conteudo">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-10">
+					<h1>Pesquisa de cidades</h1>
+				</div>
+				
+				<div class="col-xs-2">
+					<div class="aw-page-header-controls">
+						<a class="btn  btn-default" th:href="@{/cidades/nova}">
+							<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Nova cidade</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="container-fluid">
+		<form method="GET" th:object="${cidadeFilter}" th:action="@{/cidades}">
+			<div class="row">			
+				<div class="form-group  col-sm-6">
+					<label class="control-label" for="estado">Estado</label>
+					<select id="estado" class="form-control" th:field="*{estado}">
+						<option value="">Selecione um estado</option>
+						<option th:each="estado : ${estados}" th:value="${estado.id}" th:text="${estado.nome}">Ceará</option>
+					</select>
+				</div>
+				<div class="form-group  col-sm-6" >
+					<label class="control-label" for="nome">Nome</label>
+					<input type="text" class="form-control" id="nome" th:field="*{nome}" autofocus="autofocus"/>
+				</div>
+			</div>
+			
+			<button type="submit" class="btn  btn-primary">Pesquisar</button>
+		</form>
+		
+		<div class="table-responsive  bw-tabela-simples">
+			<table class="table  table-hover">
+				<thead>
+					<tr>
+						<th class="table-cidades-col-valor">Estado</th>
+						<th class="table-cidades-col-nome">
+							<brewer:order page=${pagina} field="nome" text="Cidade" />
+						</th>
+						<th class="table-cidades-col-acoes"></th>
+					</tr>
+				</thead>
+				
+				<tbody>
+					<tr th:each="cidade : ${pagina.conteudo}">
+						<td th:text="${cidade.estado.nome}">Ceará</td>
+						<td th:text="${cidade.nome}">Sobral</td>
+						<td class="text-center">
+							<a class="btn  btn-link  btn-xs js-tooltip" title="Editar"
+								th:href="@{/cidades/{id}(id=${cidade.id})}"> 
+								<i class="glyphicon glyphicon-pencil"></i>
+							</a>
+							<a class="btn  btn-link  btn-xs js-tooltip js-excluir-btn" title="Excluir"
+								data:url="@{/cidades/{id}(id=${cidade.id})}" data:objeto="${cidade.nome}">
+								<i class="glyphicon glyphicon-remove"></i>
+							</a>
+						</td>
+					</tr>
+					<tr th:if="${pagina.vazia}">
+						<td colspan="7">Nunhuma cidade encontrada!</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<brewer:pagination page="${pagina}" />
+	</div>
+
+</section>
+<th:block layout:fragment="javascript-extras">
+	<script th:src="@{/javascripts/brewer.dialogo-excluir.js}"></script>
+</th:block>
+</body>
+</html>
