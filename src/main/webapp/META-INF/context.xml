@@ -6,7 +6,7 @@
           type="com.mchange.v2.c3p0.ComboPooledDataSource"
           driverClass="com.microsoft.sqlserver.jdbc.SQLServerDriver"
           jdbcUrl="jdbc:sqlserver://localhost;databaseName=brewer"
-          user="root"
+          user="username"
           password="****"
           initialPoolSize="5"
           minPoolSize="5"
